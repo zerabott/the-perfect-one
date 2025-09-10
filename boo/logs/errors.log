@@ -1,0 +1,563 @@
+2025-09-08 21:40:52,747 - confession_bot.migrations - ERROR - apply_migration:496 - Failed to apply migration 15: table posts_new has 24 columns but 25 values were supplied
+2025-09-08 21:40:52,750 - confession_bot.migrations - ERROR - migrate_to_latest:522 - Migration failed at version 15
+2025-09-09 14:00:19,858 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:20,474 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:00:21,118 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:21,518 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:00:22,077 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in start_handler: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 281, in start_handler
+    add_user(user.id, user.username, user.first_name, user.last_name)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 220, in add_user
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+            last_name = EXCLUDED.last_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''', (user_id, username, first_name, last_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:22,275 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 1298849354 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:22,633 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:23,201 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 6261688120 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:23,584 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in start_handler: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 281, in start_handler
+    add_user(user.id, user.username, user.first_name, user.last_name)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 220, in add_user
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+            last_name = EXCLUDED.last_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''', (user_id, username, first_name, last_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:23,811 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 1298849354 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:24,223 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:24,631 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 6261688120 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:24,965 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in start_handler: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 281, in start_handler
+    add_user(user.id, user.username, user.first_name, user.last_name)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 220, in add_user
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+            last_name = EXCLUDED.last_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''', (user_id, username, first_name, last_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:25,144 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 1298849354 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:25,498 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:25,962 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 6261688120 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:00:35,490 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\new\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\new\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:00:36,510 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:12:09,073 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in start_handler: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 281, in start_handler
+    add_user(user.id, user.username, user.first_name, user.last_name)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 220, in add_user
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+            last_name = EXCLUDED.last_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''', (user_id, username, first_name, last_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:09,399 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 1298849354 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:09,749 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:10,114 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 6261688120 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:13,601 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in start_handler: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 281, in start_handler
+    add_user(user.id, user.username, user.first_name, user.last_name)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 220, in add_user
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+            last_name = EXCLUDED.last_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''', (user_id, username, first_name, last_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:13,801 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 1298849354 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:14,244 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:14,621 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 6261688120 of error: Can't parse entities: unsupported start tag "4" at byte offset 1046
+2025-09-09 14:12:17,492 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:18,106 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:12:19,308 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:19,810 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:12:20,919 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:21,348 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:12:22,380 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:23,041 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:12:24,147 - confession_bot.error_handler - ERROR - wrapper:221 - Unexpected error in handle_menu_choice: near "%": syntax error
+Traceback (most recent call last):
+  File "C:\Users\sende\Desktop\boo\error_handler.py", line 123, in wrapper
+    return await func(update, context, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\bot.py", line 356, in handle_menu_choice
+    if is_blocked_user(user_id):
+       ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\sende\Desktop\boo\db.py", line 256, in is_blocked_user
+    cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: near "%": syntax error
+2025-09-09 14:12:24,545 - confession_bot.error_handler - ERROR - notify_admins_of_error:310 - Failed to notify admin 7085119805 of error: Chat not found
+2025-09-09 14:57:37,772 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+2025-09-09 14:57:46,375 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
+2025-09-09 14:58:16,361 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '(' is reserved and must be escaped with the preceding '\'
+2025-09-09 14:58:50,953 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '!' is reserved and must be escaped with the preceding '\'
+2025-09-09 14:59:13,619 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '!' is reserved and must be escaped with the preceding '\'
+2025-09-09 14:59:18,741 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '.' is reserved and must be escaped with the preceding '\'
+2025-09-09 15:00:51,240 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '(' is reserved and must be escaped with the preceding '\'
+2025-09-09 15:09:29,036 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: 'EnhancedLeaderboardManager' object has no attribute 'get_leaderboard'
+2025-09-09 15:09:31,641 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: 'EnhancedLeaderboardManager' object has no attribute 'get_leaderboard'
+2025-09-09 15:09:35,711 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: 'EnhancedLeaderboardManager' object has no attribute 'get_leaderboard'
+2025-09-09 15:09:41,338 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: Can't parse entities: character '+' is reserved and must be escaped with the preceding '\'
+2025-09-09 15:10:13,089 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: 'EnhancedLeaderboardManager' object has no attribute 'get_leaderboard'
+2025-09-09 15:10:18,306 - confession_bot.enhanced_ranking_ui - ERROR - enhanced_ranking_callback_handler:294 - Error in enhanced_ranking_callback_handler: Can't parse entities: character '+' is reserved and must be escaped with the preceding '\'
+2025-09-09 15:25:15,339 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '!' is reserved and must be escaped with the preceding '\'
+2025-09-09 15:25:41,657 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '(' is reserved and must be escaped with the preceding '\'
+2025-09-09 16:01:46,900 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '!' is reserved and must be escaped with the preceding '\'
+2025-09-09 16:01:52,174 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '(' is reserved and must be escaped with the preceding '\'
+2025-09-09 16:17:12,047 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Query is too old and response timeout expired or query id is invalid
+2025-09-09 16:26:08,578 - confession_bot.error_handler - ERROR - global_error_handler:395 - Global error handler triggered
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_exceptions.py", line 10, in map_exceptions
+    yield
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_backends\anyio.py", line 34, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\streams\tls.py", line 237, in receive
+    data = await self._call_sslobject_method(self._ssl_object.read, max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\streams\tls.py", line 180, in _call_sslobject_method
+    data = await self.transport_stream.receive()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\_backends\_asyncio.py", line 1265, in receive
+    raise self._protocol.exception from None
+anyio.BrokenResourceError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 60, in map_httpcore_exceptions
+    yield
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 353, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection_pool.py", line 262, in handle_async_request
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection_pool.py", line 245, in handle_async_request
+    response = await connection.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection.py", line 96, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 121, in handle_async_request
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 99, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 164, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 200, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.READ_NUM_BYTES, timeout=timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_backends\anyio.py", line 31, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_httpxrequest.py", line 216, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1530, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1617, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1645, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1682, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1719, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 352, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 77, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 607, in _network_loop_retry
+    if not await action_cb():
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 335, in polling_action_cb
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 320, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_extbot.py", line 543, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 381, in decorator
+    result = await func(self, *args, **kwargs)  # skipcq: PYL-E1102
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 3661, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 469, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_extbot.py", line 325, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 497, in _do_post
+    return await request.post(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 168, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 291, in _request_wrapper
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 277, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_httpxrequest.py", line 240, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ReadError: 
+2025-09-09 16:29:21,505 - confession_bot.error_handler - ERROR - global_error_handler:395 - Global error handler triggered
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_exceptions.py", line 10, in map_exceptions
+    yield
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_backends\anyio.py", line 34, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\streams\tls.py", line 237, in receive
+    data = await self._call_sslobject_method(self._ssl_object.read, max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\streams\tls.py", line 180, in _call_sslobject_method
+    data = await self.transport_stream.receive()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\anyio\_backends\_asyncio.py", line 1265, in receive
+    raise self._protocol.exception from None
+anyio.BrokenResourceError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 60, in map_httpcore_exceptions
+    yield
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 353, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection_pool.py", line 262, in handle_async_request
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection_pool.py", line 245, in handle_async_request
+    response = await connection.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\connection.py", line 96, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 121, in handle_async_request
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 99, in handle_async_request
+    ) = await self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 164, in _receive_response_headers
+    event = await self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_async\http11.py", line 200, in _receive_event
+    data = await self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.READ_NUM_BYTES, timeout=timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_backends\anyio.py", line 31, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_httpxrequest.py", line 216, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1530, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1617, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1645, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1682, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_client.py", line 1719, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 352, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\httpx\_transports\default.py", line 77, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 607, in _network_loop_retry
+    if not await action_cb():
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 335, in polling_action_cb
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_updater.py", line 320, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_extbot.py", line 543, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 381, in decorator
+    result = await func(self, *args, **kwargs)  # skipcq: PYL-E1102
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 3661, in get_updates
+    await self._post(
+    ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    ),
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 469, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\ext\_extbot.py", line 325, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\_bot.py", line 497, in _do_post
+    return await request.post(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 168, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 291, in _request_wrapper
+    raise exc
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_baserequest.py", line 277, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "C:\Users\sende\AppData\Roaming\Python\Python313\site-packages\telegram\request\_httpxrequest.py", line 240, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ReadError: 
+2025-09-09 16:29:23,298 - confession_bot.error_handler - ERROR - wrapper:183 - Network error: httpx.ReadError: 
+2025-09-09 16:30:40,718 - confession_bot.error_handler - ERROR - wrapper:183 - Network error: httpx.ReadError: 
+2025-09-09 16:38:29,117 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '(' is reserved and must be escaped with the preceding '\'
+2025-09-09 16:39:18,333 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '.' is reserved and must be escaped with the preceding '\'
+2025-09-09 16:40:22,414 - confession_bot.error_handler - ERROR - wrapper:132 - Bad request: Can't parse entities: character '!' is reserved and must be escaped with the preceding '\'

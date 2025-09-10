@@ -1,0 +1,27 @@
+services:
+  # Telegram Bot as Web Service (for free 24/7 hosting) with Aiven PostgreSQL
+  - type: web
+    name: telegram-confession-bot
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python bot_web.py"
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: CHANNEL_ID
+        sync: false
+      - key: BOT_USERNAME
+        sync: false
+      - key: ADMIN_ID_1
+        sync: false
+      - key: ADMIN_ID_2
+        sync: false
+      - key: USE_POSTGRESQL
+        value: "true"
+      # Aiven PostgreSQL connection (set manually in Render dashboard)
+      - key: DATABASE_URL
+        sync: false  # You'll set this manually from your Aiven service
+      - key: PORT
+        value: "10000"
+    autoDeploy: true
