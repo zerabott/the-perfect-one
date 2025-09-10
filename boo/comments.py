@@ -1,72 +1,95 @@
-import sqlite3
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from config import DB_PATH, COMMENTS_PER_PAGE, CHANNEL_ID, BOT_USERNAME
+from config import COMMENTS_PER_PAGE, CHANNEL_ID, BOT_USERNAME
 from utils import escape_markdown_text
 from db import get_comment_count
+from db_connection import get_db_connection, execute_query, adapt_query
 from submission import is_media_post, get_media_info
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def save_comment(post_id, content, user_id, parent_comment_id=None):
     """Save a comment to the database"""
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        db_conn = get_db_connection()
+        with db_conn.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?)",
-                (post_id, content, user_id, parent_comment_id)
-            )
-            comment_id = cursor.lastrowid
+            
+            # Insert comment using proper database abstraction
+            insert_query = adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?)")
+            cursor.execute(insert_query, (post_id, content, user_id, parent_comment_id))
+            
+            if db_conn.use_postgresql:
+                # PostgreSQL: get the ID using RETURNING clause
+                cursor.execute(adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?) RETURNING comment_id"), 
+                             (post_id, content, user_id, parent_comment_id))
+                comment_id = cursor.fetchone()[0]
+            else:
+                # SQLite: use lastrowid
+                comment_id = cursor.lastrowid
 
             # Update user stats
-            cursor.execute(
-                "UPDATE users SET comments_posted = comments_posted + 1 WHERE user_id = ?",
-                (user_id,)
-            )
-            conn.commit()
+            update_query = adapt_query("UPDATE users SET comments_posted = comments_posted + 1 WHERE user_id = ?")
+            cursor.execute(update_query, (user_id,))
+            
+            if db_conn.use_postgresql:
+                conn.commit()
+            
             return comment_id, None
     except Exception as e:
+        logger.error(f"Error saving comment: {e}")
         return None, f"Database error: {str(e)}"
 
 
 def get_post_with_channel_info(post_id):
     """Get post information including channel message ID"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT post_id, content, category, channel_message_id, approved FROM posts WHERE post_id = ?",
-            (post_id,)
-        )
-        return cursor.fetchone()
+    try:
+        query = adapt_query("SELECT post_id, content, category, channel_message_id, approved FROM posts WHERE post_id = ?")
+        result = execute_query(query, (post_id,), fetch='one')
+        return result
+    except Exception as e:
+        logger.error(f"Error getting post info: {e}")
+        return None
 
 
 def get_comments_paginated(post_id, page=1):
     """Get comments for a post in flat structure like Telegram native replies"""
     offset = (page - 1) * COMMENTS_PER_PAGE
 
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
+    try:
+        # Get total count using the existing function
+        total_comments = get_comment_count(post_id)
 
-        # Get total count of ALL comments for this post (flat structure)
-        cursor.execute(
-            "SELECT COUNT(*) FROM comments WHERE post_id = ?",
-            (post_id,)
-        )
-        total_comments = cursor.fetchone()[0]
-
-        # Get paginated comments in chronological order (flat structure)
-        cursor.execute('''
-            SELECT comment_id, content, timestamp, likes, dislikes, flagged, parent_comment_id,
-                   ROW_NUMBER() OVER (ORDER BY timestamp ASC) as comment_number
-            FROM comments 
-            WHERE post_id = ?
-            ORDER BY timestamp ASC
-            LIMIT ? OFFSET ?
-        ''', (post_id, COMMENTS_PER_PAGE, offset))
-        comments = cursor.fetchall()
+        # Get paginated comments
+        db_conn = get_db_connection()
+        
+        if db_conn.use_postgresql:
+            # PostgreSQL version with ROW_NUMBER()
+            query = """
+                SELECT comment_id, content, timestamp, likes, dislikes, flagged, parent_comment_id,
+                       ROW_NUMBER() OVER (ORDER BY timestamp ASC) as comment_number
+                FROM comments 
+                WHERE post_id = %s
+                ORDER BY timestamp ASC
+                LIMIT %s OFFSET %s
+            """
+        else:
+            # SQLite version with ROW_NUMBER()
+            query = """
+                SELECT comment_id, content, timestamp, likes, dislikes, flagged, parent_comment_id,
+                       ROW_NUMBER() OVER (ORDER BY timestamp ASC) as comment_number
+                FROM comments 
+                WHERE post_id = ?
+                ORDER BY timestamp ASC
+                LIMIT ? OFFSET ?
+            """
+        
+        comments = execute_query(query, (post_id, COMMENTS_PER_PAGE, offset), fetch='all')
 
         # Transform into simplified flat structure
         comments_flat = []
-        for comment in comments:
+        for comment in comments or []:
             comment_id = comment[0]
             content = comment[1]
             timestamp = comment[2]
@@ -88,14 +111,10 @@ def get_comments_paginated(post_id, page=1):
                 'is_reply': parent_comment_id is not None
             }
             
-            # If this is a reply, get the original comment info for quoting
+            # If this is a reply, get the original comment info
             if parent_comment_id:
-                cursor.execute('''
-                    SELECT comment_id, content, timestamp 
-                    FROM comments 
-                    WHERE comment_id = ?
-                ''', (parent_comment_id,))
-                original = cursor.fetchone()
+                original_query = adapt_query("SELECT comment_id, content, timestamp FROM comments WHERE comment_id = ?")
+                original = execute_query(original_query, (parent_comment_id,), fetch='one')
                 if original:
                     comment_data['original_comment'] = {
                         'comment_id': original[0],
@@ -108,135 +127,115 @@ def get_comments_paginated(post_id, page=1):
         total_pages = (total_comments + COMMENTS_PER_PAGE - 1) // COMMENTS_PER_PAGE
 
         return comments_flat, page, total_pages, total_comments
+    except Exception as e:
+        logger.error(f"Error getting paginated comments: {e}")
+        return [], 1, 1, 0
 
 
 def get_comment_by_id(comment_id):
     """Get a specific comment by ID"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT * FROM comments WHERE comment_id = ?",
-            (comment_id,)
-        )
-        return cursor.fetchone()
+    try:
+        query = adapt_query("SELECT * FROM comments WHERE comment_id = ?")
+        return execute_query(query, (comment_id,), fetch='one')
+    except Exception as e:
+        logger.error(f"Error getting comment by ID: {e}")
+        return None
 
 
 def react_to_comment(user_id, comment_id, reaction_type):
     """Add or update reaction to a comment"""
     try:
-        with sqlite3.connect(DB_PATH) as conn:
+        db_conn = get_db_connection()
+        with db_conn.get_connection() as conn:
             cursor = conn.cursor()
 
             # Check existing reaction
-            cursor.execute(
-                "SELECT reaction_type FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?",
-                (user_id, comment_id)
-            )
+            check_query = adapt_query("SELECT reaction_type FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?")
+            cursor.execute(check_query, (user_id, comment_id))
             existing = cursor.fetchone()
 
             if existing:
                 if existing[0] == reaction_type:
                     # Remove reaction if same type
-                    cursor.execute(
-                        "DELETE FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?",
-                        (user_id, comment_id)
-                    )
+                    delete_query = adapt_query("DELETE FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?")
+                    cursor.execute(delete_query, (user_id, comment_id))
+                    
                     # Update comment counts
                     if reaction_type == 'like':
-                        cursor.execute(
-                            "UPDATE comments SET likes = likes - 1 WHERE comment_id = ?",
-                            (comment_id,)
-                        )
+                        update_query = adapt_query("UPDATE comments SET likes = likes - 1 WHERE comment_id = ?")
                     else:
-                        cursor.execute(
-                            "UPDATE comments SET dislikes = dislikes - 1 WHERE comment_id = ?",
-                            (comment_id,)
-                        )
+                        update_query = adapt_query("UPDATE comments SET dislikes = dislikes - 1 WHERE comment_id = ?")
+                    cursor.execute(update_query, (comment_id,))
                     action = "removed"
                 else:
                     # Update reaction type
-                    cursor.execute(
-                        "UPDATE reactions SET reaction_type = ? WHERE user_id = ? AND target_type = 'comment' AND target_id = ?",
-                        (reaction_type, user_id, comment_id)
-                    )
+                    update_reaction_query = adapt_query("UPDATE reactions SET reaction_type = ? WHERE user_id = ? AND target_type = 'comment' AND target_id = ?")
+                    cursor.execute(update_reaction_query, (reaction_type, user_id, comment_id))
+                    
                     # Update comment counts
                     if existing[0] == 'like':
-                        cursor.execute(
-                            "UPDATE comments SET likes = likes - 1, dislikes = dislikes + 1 WHERE comment_id = ?",
-                            (comment_id,)
-                        )
+                        update_query = adapt_query("UPDATE comments SET likes = likes - 1, dislikes = dislikes + 1 WHERE comment_id = ?")
                     else:
-                        cursor.execute(
-                            "UPDATE comments SET likes = likes + 1, dislikes = dislikes - 1 WHERE comment_id = ?",
-                            (comment_id,)
-                        )
+                        update_query = adapt_query("UPDATE comments SET likes = likes + 1, dislikes = dislikes - 1 WHERE comment_id = ?")
+                    cursor.execute(update_query, (comment_id,))
                     action = "changed"
             else:
                 # Add new reaction
-                cursor.execute(
-                    "INSERT INTO reactions (user_id, target_type, target_id, reaction_type) VALUES (?, 'comment', ?, ?)",
-                    (user_id, comment_id, reaction_type)
-                )
+                insert_query = adapt_query("INSERT INTO reactions (user_id, target_type, target_id, reaction_type) VALUES (?, 'comment', ?, ?)")
+                cursor.execute(insert_query, (user_id, comment_id, reaction_type))
+                
                 # Update comment counts
                 if reaction_type == 'like':
-                    cursor.execute(
-                        "UPDATE comments SET likes = likes + 1 WHERE comment_id = ?",
-                        (comment_id,)
-                    )
+                    update_query = adapt_query("UPDATE comments SET likes = likes + 1 WHERE comment_id = ?")
                 else:
-                    cursor.execute(
-                        "UPDATE comments SET dislikes = dislikes + 1 WHERE comment_id = ?",
-                        (comment_id,)
-                    )
+                    update_query = adapt_query("UPDATE comments SET dislikes = dislikes + 1 WHERE comment_id = ?")
+                cursor.execute(update_query, (comment_id,))
                 action = "added"
 
-            conn.commit()
+            if db_conn.use_postgresql:
+                conn.commit()
 
-            # Return current counts along with action
-            cursor.execute(
-                "SELECT likes, dislikes FROM comments WHERE comment_id = ?",
-                (comment_id,)
-            )
+            # Return current counts
+            count_query = adapt_query("SELECT likes, dislikes FROM comments WHERE comment_id = ?")
+            cursor.execute(count_query, (comment_id,))
             counts = cursor.fetchone()
             current_likes = counts[0] if counts else 0
             current_dislikes = counts[1] if counts else 0
 
             return True, action, current_likes, current_dislikes
     except Exception as e:
+        logger.error(f"Error reacting to comment: {e}")
         return False, str(e), 0, 0
 
 
 def flag_comment(comment_id):
     """Flag a comment for review"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute("UPDATE comments SET flagged = 1 WHERE comment_id = ?", (comment_id,))
-        conn.commit()
+    try:
+        query = adapt_query("UPDATE comments SET flagged = 1 WHERE comment_id = ?")
+        execute_query(query, (comment_id,))
+        return True
+    except Exception as e:
+        logger.error(f"Error flagging comment: {e}")
+        return False
 
 
 def get_user_reaction(user_id, comment_id):
     """Get user's reaction to a specific comment"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT reaction_type FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?",
-            (user_id, comment_id)
-        )
-        result = cursor.fetchone()
+    try:
+        query = adapt_query("SELECT reaction_type FROM reactions WHERE user_id = ? AND target_type = 'comment' AND target_id = ?")
+        result = execute_query(query, (user_id, comment_id), fetch='one')
         return result[0] if result else None
+    except Exception as e:
+        logger.error(f"Error getting user reaction: {e}")
+        return None
 
 
 def get_comment_sequential_number(comment_id):
     """Get the sequential number of a comment within its post (flat structure)"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-
+    try:
         # Get the comment's post_id and timestamp
-        cursor.execute(
-            "SELECT post_id, timestamp FROM comments WHERE comment_id = ?",
-            (comment_id,)
-        )
-        comment_info = cursor.fetchone()
+        info_query = adapt_query("SELECT post_id, timestamp FROM comments WHERE comment_id = ?")
+        comment_info = execute_query(info_query, (comment_id,), fetch='one')
 
         if not comment_info:
             return None
@@ -244,36 +243,33 @@ def get_comment_sequential_number(comment_id):
         post_id, timestamp = comment_info
 
         # Count all comments in this post that were posted before or at the same time
-        cursor.execute("""
+        count_query = adapt_query("""
             SELECT COUNT(*) FROM comments 
             WHERE post_id = ? AND timestamp <= ?
             ORDER BY timestamp ASC
-        """, (post_id, timestamp))
-        result = cursor.fetchone()
+        """)
+        result = execute_query(count_query, (post_id, timestamp), fetch='one')
         return result[0] if result else 1
+    except Exception as e:
+        logger.error(f"Error getting comment sequential number: {e}")
+        return 1
 
 
 def get_parent_comment_for_reply(comment_id):
     """Get the original comment details for a reply (flat structure)"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "SELECT parent_comment_id FROM comments WHERE comment_id = ?",
-            (comment_id,)
-        )
-        result = cursor.fetchone()
+    try:
+        # Get parent comment ID
+        parent_query = adapt_query("SELECT parent_comment_id FROM comments WHERE comment_id = ?")
+        result = execute_query(parent_query, (comment_id,), fetch='one')
 
         if not result or not result[0]:
             return None
 
         parent_comment_id = result[0]
 
-        cursor.execute(
-            "SELECT comment_id, post_id, content, timestamp FROM comments WHERE comment_id = ?",
-            (parent_comment_id,)
-        )
-        parent_comment = cursor.fetchone()
+        # Get parent comment details
+        details_query = adapt_query("SELECT comment_id, post_id, content, timestamp FROM comments WHERE comment_id = ?")
+        parent_comment = execute_query(details_query, (parent_comment_id,), fetch='one')
 
         if parent_comment:
             parent_sequential_number = get_comment_sequential_number(parent_comment_id)
@@ -286,36 +282,33 @@ def get_parent_comment_for_reply(comment_id):
             }
 
         return None
+    except Exception as e:
+        logger.error(f"Error getting parent comment: {e}")
+        return None
 
 
 def find_comment_page(comment_id):
     """Find which page a comment is on for navigation"""
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        
-        # First get the comment's post_id and check if it's a parent comment
-        cursor.execute(
-            "SELECT post_id, parent_comment_id FROM comments WHERE comment_id = ?",
-            (comment_id,)
-        )
-        comment_info = cursor.fetchone()
+    try:
+        # Get comment info
+        info_query = adapt_query("SELECT post_id, parent_comment_id FROM comments WHERE comment_id = ?")
+        comment_info = execute_query(info_query, (comment_id,), fetch='one')
         
         if not comment_info:
             return None
             
         post_id, parent_comment_id = comment_info
         
-        # If it's a reply, we need to find the parent comment's page
+        # If it's a reply, find the parent comment's page
         target_comment_id = parent_comment_id if parent_comment_id else comment_id
         
         # Count parent comments before this one
-        cursor.execute("""
+        count_query = adapt_query("""
             SELECT COUNT(*) FROM comments 
             WHERE post_id = ? AND parent_comment_id IS NULL AND comment_id < ?
             ORDER BY timestamp ASC
-        """, (post_id, target_comment_id))
-        
-        comments_before = cursor.fetchone()[0]
+        """)
+        comments_before = execute_query(count_query, (post_id, target_comment_id), fetch='one')[0]
         page = (comments_before // COMMENTS_PER_PAGE) + 1
         
         return {
@@ -323,6 +316,9 @@ def find_comment_page(comment_id):
             'post_id': post_id,
             'comment_id': target_comment_id
         }
+    except Exception as e:
+        logger.error(f"Error finding comment page: {e}")
+        return None
 
 
 # Format replies to look like Telegram's native reply feature
@@ -338,17 +334,10 @@ def format_reply(parent_text, child_text, parent_author="Anonymous"):
 
 async def update_channel_message_comment_count(context, post_id):
     """Update the comment count on the channel message"""
-    import logging
-    logger = logging.getLogger(__name__)
-
     try:
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT post_id, content, category, channel_message_id, approved, post_number FROM posts WHERE post_id = ?",
-                (post_id,)
-            )
-            post_info = cursor.fetchone()
+        # Get post info using database abstraction
+        post_query = adapt_query("SELECT post_id, content, category, channel_message_id, approved, post_number FROM posts WHERE post_id = ?")
+        post_info = execute_query(post_query, (post_id,), fetch='one')
 
         if not post_info or not post_info[3]:
             return False, "No channel message found"
@@ -358,6 +347,7 @@ async def update_channel_message_comment_count(context, post_id):
         if approved != 1:
             return False, "Post not approved"
 
+        # Use the properly working get_comment_count function
         comment_count = get_comment_count(post_id)
 
         bot_username_clean = BOT_USERNAME.lstrip('@')
@@ -421,4 +411,5 @@ async def update_channel_message_comment_count(context, post_id):
         return True, f"Updated comment count to {comment_count}"
 
     except Exception as e:
+        logger.error(f"Error updating channel message: {e}")
         return False, f"Failed to update channel message: {str(e)}"
