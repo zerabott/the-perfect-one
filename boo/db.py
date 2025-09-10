@@ -64,7 +64,7 @@ def init_db():
         # Comments
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS comments (
-            comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            comment_id SERIAL PRIMARY KEY,
             post_id INTEGER NOT NULL,
             user_id BIGINT NOT NULL,
             content TEXT NOT NULL,
@@ -81,7 +81,7 @@ def init_db():
         # Reactions
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS reactions (
-            reaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reaction_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             target_type TEXT NOT NULL,
             target_id INTEGER NOT NULL,
@@ -94,7 +94,7 @@ def init_db():
         # Reports
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS reports (
-            report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            report_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             target_type TEXT NOT NULL,
             target_id INTEGER NOT NULL,
@@ -106,7 +106,7 @@ def init_db():
         # Admin messages
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS admin_messages (
-            message_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             admin_id BIGINT,
             user_message TEXT,
@@ -119,7 +119,7 @@ def init_db():
         # Admin notifications tracking
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS admin_notifications (
-            notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            notification_id SERIAL PRIMARY KEY,
             message_id INTEGER NOT NULL,
             admin_id BIGINT NOT NULL,
             telegram_message_id BIGINT,
@@ -150,7 +150,7 @@ def init_db():
         
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS point_transactions (
-            transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            transaction_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             points_change INTEGER NOT NULL,
             transaction_type TEXT NOT NULL,
@@ -163,7 +163,7 @@ def init_db():
         
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_achievements (
-            achievement_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            achievement_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             achievement_type TEXT NOT NULL,
             achievement_name TEXT NOT NULL,
@@ -186,23 +186,24 @@ def init_db():
             is_special INTEGER DEFAULT 0
         )''')
         
-        # Insert default ranks (SQLite compatible)
+        # Insert default ranks (PostgreSQL compatible)
         cursor.execute('''
-        INSERT OR IGNORE INTO rank_definitions (rank_id, rank_name, rank_emoji, min_points, max_points, special_perks, is_special)
+        INSERT INTO rank_definitions (rank_id, rank_name, rank_emoji, min_points, max_points, special_perks, is_special)
         VALUES 
-            (1, 'Freshman', '🥉', 0, 99, '{}', 0),
-            (2, 'Sophomore', '🥈', 100, 249, '{}', 0),
-            (3, 'Junior', '🥇', 250, 499, '{}', 0),
-            (4, 'Senior', '🏆', 500, 999, '{"daily_confessions": 8}', 0),
-            (5, 'Graduate', '🎓', 1000, 1999, '{"daily_confessions": 10, "priority_review": true}', 0),
-            (6, 'Master', '👑', 2000, 4999, '{"daily_confessions": 15, "priority_review": true, "comment_highlight": true}', 1),
-            (7, 'Legend', '🌟', 5000, NULL, '{"all_perks": true, "unlimited_daily": true, "legend_badge": true}', 1)
+            (1, 'Freshman', '･', 0, 99, '{}', 0),
+            (2, 'Sophomore', '･', 100, 249, '{}', 0),
+            (3, 'Junior', '･', 250, 499, '{}', 0),
+            (4, 'Senior', '醇', 500, 999, '{"daily_confessions": 8}', 0),
+            (5, 'Graduate', '雌', 1000, 1999, '{"daily_confessions": 10, "priority_review": true}', 0),
+            (6, 'Master', '荘', 2000, 4999, '{"daily_confessions": 15, "priority_review": true, "comment_highlight": true}', 1),
+            (7, 'Legend', '検', 5000, NULL, '{"all_perks": true, "unlimited_daily": true, "legend_badge": true}', 1)
+        ON CONFLICT (rank_id) DO NOTHING
         ''')
         
         # Analytics
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_activity_log (
-            log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            log_id SERIAL PRIMARY KEY,
             user_id BIGINT NOT NULL,
             activity_type TEXT NOT NULL,
             details TEXT,
@@ -230,8 +231,12 @@ def add_user(user_id, username=None, first_name=None, last_name=None):
     with db_conn.get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT OR REPLACE INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, 0, 0, 0)
+            INSERT INTO users (user_id, username, first_name, last_name, join_date, questions_asked, comments_posted, blocked)
+            VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, 0, 0, 0)
+            ON CONFLICT (user_id) DO UPDATE SET
+                username = EXCLUDED.username,
+                first_name = EXCLUDED.first_name,
+                last_name = EXCLUDED.last_name
         ''', (user_id, username, first_name, last_name))
         conn.commit()
 
@@ -243,7 +248,7 @@ def get_user_info(user_id):
         cursor.execute('''
             SELECT user_id, username, first_name, last_name, join_date, 
                    questions_asked, comments_posted, blocked
-            FROM users WHERE user_id = ?
+            FROM users WHERE user_id = %s
         ''', (user_id,))
         return cursor.fetchone()
 
@@ -252,7 +257,7 @@ def get_comment_count(post_id):
     db_conn = get_db_connection()
     with db_conn.get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT COUNT(*) FROM comments WHERE post_id = ?', (post_id,))
+        cursor.execute('SELECT COUNT(*) FROM comments WHERE post_id = %s', (post_id,))
         result = cursor.fetchone()
         return result[0] if result else 0
 
@@ -261,7 +266,7 @@ def is_blocked_user(user_id):
     db_conn = get_db_connection()
     with db_conn.get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT blocked FROM users WHERE user_id = ?', (user_id,))
+        cursor.execute('SELECT blocked FROM users WHERE user_id = %s', (user_id,))
         result = cursor.fetchone()
         return result and result[0] == 1
 
@@ -278,13 +283,13 @@ def get_user_posts(user_id, limit=10):
                    p.media_width, p.media_height, p.media_thumbnail_file_id
             FROM posts p
             LEFT JOIN comments c ON p.post_id = c.post_id
-            WHERE p.user_id = ?
+            WHERE p.user_id = %s
             GROUP BY p.post_id, p.content, p.category, p.timestamp, p.approved, p.post_number,
                      p.media_type, p.media_file_id, p.media_file_unique_id, p.media_caption,
                      p.media_file_size, p.media_mime_type, p.media_duration, 
                      p.media_width, p.media_height, p.media_thumbnail_file_id
             ORDER BY p.timestamp DESC
-            LIMIT ?
+            LIMIT %s
         ''', (user_id, limit))
         return cursor.fetchall()
         
@@ -293,6 +298,6 @@ def get_post_author_id(post_id):
     db_conn = get_db_connection()
     with db_conn.get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT user_id FROM posts WHERE post_id = ?', (post_id,))
+        cursor.execute('SELECT user_id FROM posts WHERE post_id = %s', (post_id,))
         result = cursor.fetchone()
         return result[0] if result else None
