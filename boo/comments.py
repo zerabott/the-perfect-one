@@ -16,17 +16,35 @@ def save_comment(post_id, content, user_id, parent_comment_id=None):
         with db_conn.get_connection() as conn:
             cursor = conn.cursor()
             
-            # Insert comment using proper database abstraction
-            insert_query = adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?)")
-            cursor.execute(insert_query, (post_id, content, user_id, parent_comment_id))
+            # First, validate that the post exists
+            post_check_query = adapt_query("SELECT post_id FROM posts WHERE post_id = ? AND approved = 1")
+            cursor.execute(post_check_query, (post_id,))
+            post_exists = cursor.fetchone()
             
+            if not post_exists:
+                logger.error(f"Cannot save comment: Post {post_id} does not exist or is not approved")
+                return None, f"Post {post_id} not found or not approved"
+            
+            # Validate parent comment if provided
+            if parent_comment_id:
+                parent_check_query = adapt_query("SELECT comment_id FROM comments WHERE comment_id = ?")
+                cursor.execute(parent_check_query, (parent_comment_id,))
+                parent_exists = cursor.fetchone()
+                
+                if not parent_exists:
+                    logger.error(f"Cannot save comment: Parent comment {parent_comment_id} does not exist")
+                    return None, f"Parent comment {parent_comment_id} not found"
+            
+            # Insert comment using proper database abstraction
             if db_conn.use_postgresql:
-                # PostgreSQL: get the ID using RETURNING clause
-                cursor.execute(adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?) RETURNING comment_id"), 
-                             (post_id, content, user_id, parent_comment_id))
+                # PostgreSQL: use RETURNING clause to get the ID
+                insert_query = adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?) RETURNING comment_id")
+                cursor.execute(insert_query, (post_id, content, user_id, parent_comment_id))
                 comment_id = cursor.fetchone()[0]
             else:
                 # SQLite: use lastrowid
+                insert_query = adapt_query("INSERT INTO comments (post_id, content, user_id, parent_comment_id) VALUES (?, ?, ?, ?)")
+                cursor.execute(insert_query, (post_id, content, user_id, parent_comment_id))
                 comment_id = cursor.lastrowid
 
             # Update user stats
