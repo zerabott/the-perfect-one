@@ -33,7 +33,7 @@ def init_db():
         # Posts table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS posts (
-            post_id SERIAL PRIMARY KEY,,
+            post_id SERIAL PRIMARY KEY,
             content TEXT NOT NULL,
             category TEXT NOT NULL,
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
